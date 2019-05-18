@@ -23,7 +23,7 @@ class RewardTracker:
         self.ts_frame = frame
         self.ts = time.time()
         mean_reward = np.mean(self.total_rewards[-100:])
-        epsilon_str = "" if epsilon is None else ", eps %.2f" % epsilon
+        # epsilon_str = "" if epsilon is None else ", eps %.2f" % epsilon
         # print(
         #     "%d: done %d games, mean reward %.3f, speed %.2f f/s%s"
         #     % (frame, len(self.total_rewards), mean_reward, speed, epsilon_str)
@@ -38,7 +38,8 @@ class RewardTracker:
         logs["reward_100"] = mean_reward
         logs["reward"] = reward
 
-        wandb.log(logs, step=frame)
+        if frame % 100 == 0:
+            wandb.log(logs, step=frame)
 
         if mean_reward > self.stop_reward:
             print("Solved in %d frames!" % frame)

@@ -25,4 +25,3 @@ def read_yaml(filename: str):
 
 def get_config(file):
     return read_yaml(file)
-

@@ -1,9 +1,6 @@
-import argparse
-
 import click
 import gym
 import ptan
-import torch
 
 # torch.backends.cudnn.benchmark = False
 import torch.optim as optim

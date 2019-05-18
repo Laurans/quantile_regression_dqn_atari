@@ -9,6 +9,13 @@ import torch
 import torch.optim as optim
 
 from dqn_extended.common import configreader, neuralnetworks, trackers, losses
+import wandb
+
+
+def init_logger(params):
+    wandb.init(
+        name="dqn_classic", project="dqn_extended", dir="../wandb", config=params
+    )
 
 
 @click.command()
@@ -16,12 +23,15 @@ from dqn_extended.common import configreader, neuralnetworks, trackers, losses
 def main(gpu):
     params = configreader.get_config("./common/config/hyperparams.yaml")["pong"]
     params["device"] = f"cuda:{gpu}"
+    init_logger(params)
 
     env = gym.make(params["env_name"])
     env = ptan.common.wrappers.wrap_dqn(env)
 
     net = neuralnetworks.DQN(env.observation_space.shape, env.action_space.n)
     net = net.to(params["device"])
+
+    wandb.watch(net)
 
     tgt_net = ptan.agent.TargetNet(net)
     selector = ptan.actions.EpsilonGreedyActionSelector(epsilon=params["epsilon_start"])
@@ -64,6 +74,8 @@ def main(gpu):
             )
             loss.backward()
             optimizer.step()
+
+            wandb.log({"loss": float(loss.cpu().numpy())}, step=frame_idx)
 
             if frame_idx % params["target_net_sync"] == 0:
                 tgt_net.sync()

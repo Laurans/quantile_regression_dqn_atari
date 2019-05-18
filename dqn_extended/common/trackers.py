@@ -1,6 +1,7 @@
 import sys
 import time
 import numpy as np
+import wandb
 
 
 class RewardTracker:
@@ -28,6 +29,17 @@ class RewardTracker:
             % (frame, len(self.total_rewards), mean_reward, speed, epsilon_str)
         )
         sys.stdout.flush()
+
+        logs = {}
+        if epsilon is not None:
+            logs["epsilon"] = epsilon
+
+        logs["speed"] = speed
+        logs["reward_100"] = mean_reward
+        logs["reward"] = reward
+
+        wandb.log(logs, step=frame)
+
         if mean_reward > self.stop_reward:
             print("Solved in %d frames!" % frame)
             return True

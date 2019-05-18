@@ -40,7 +40,7 @@ def main(gpu):
         env.observation_space.shape,
         env.action_space.n,
         params["C51"]["n_atoms"],
-        torch.range(
+        torch.arange(
             params["C51"]["vmin"],
             params["C51"]["vmax"] + params["C51"]["delta_z"],
             params["C51"]["delta_z"],
@@ -77,9 +77,7 @@ def main(gpu):
             new_rewards = exp_source.pop_total_rewards()
 
             if new_rewards:
-                success, logs = reward_tracker.reward(
-                    new_rewards[0], frame_idx, selector.epsilon
-                )
+                success, logs = reward_tracker.reward(new_rewards[0], frame_idx)
                 if frame_idx % params["logging_freq"] < params["train_freq"]:
                     if loss_in_float:
                         wandb["loss"] = loss_in_float

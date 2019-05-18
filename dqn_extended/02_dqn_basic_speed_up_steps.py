@@ -4,6 +4,7 @@ import ptan
 
 # torch.backends.cudnn.benchmark = False
 import torch.optim as optim
+from torch.nn.utils import clip_grad_norm_
 
 from dqn_extended.common import configreader, neuralnetworks, trackers, losses
 import wandb
@@ -46,7 +47,9 @@ def main(gpu):
     buffer = ptan.experience.ExperienceReplayBuffer(
         exp_source, buffer_size=params["replay_size"]
     )
-    optimizer = optim.Adam(net.parameters(), lr=params["learning_rate"])
+    optimizer = optim.Adam(
+        net.parameters(), lr=params["learning_rate"], **params["optim_params"]
+    )
 
     frame_idx = 0
 
@@ -75,9 +78,8 @@ def main(gpu):
                 device=params["device"],
             )
             loss.backward()
+            clip_grad_norm_(net.parameters(), params["gradient_clip"])
             optimizer.step()
-
-            # wandb.log({"loss": float(loss.detach().cpu().numpy())}, step=frame_idx)
 
             if frame_idx % params["target_net_sync"] < params["train_freq"]:
                 tgt_net.sync()

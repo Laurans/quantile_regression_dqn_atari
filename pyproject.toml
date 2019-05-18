@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "dqn_extended"
+version = "0.1.0"
+description = ""
+authors = ["Anaelle Laurans <16943368+Laurans@users.noreply.github.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+ptan = "^0.3.0"
+torch = "^1.1"
+gym = "^0.12.1"
+atari-py = "^0.1.7"
+
+[tool.poetry.dev-dependencies]
+flake8 = "^3.7"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

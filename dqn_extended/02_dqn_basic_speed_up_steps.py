@@ -2,12 +2,14 @@ import click
 import gym
 import ptan
 
-# torch.backends.cudnn.benchmark = False
+import torch
 import torch.optim as optim
 from torch.nn.utils import clip_grad_norm_
 
 from dqn_extended.common import configreader, neuralnetworks, trackers, losses
 import wandb
+
+torch.backends.cudnn.benchmark = True
 
 
 def init_logger(params):

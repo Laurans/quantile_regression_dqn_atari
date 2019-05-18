@@ -7,12 +7,14 @@ authors = ["Anaelle Laurans <16943368+Laurans@users.noreply.github.com>"]
 [tool.poetry.dependencies]
 python = "^3.7"
 ptan = "^0.3.0"
-torch = "^1.1"
 gym = "^0.12.1"
 atari-py = "^0.1.7"
 opencv-python = "^4.1"
 pyyaml = "^5.1"
 click = "^7.0"
+torch = {path = "../../../wheels/torch-1.1.0-cp37-cp37m-linux_x86_64.whl"}
+torchvision = "^0.2.2"
+wandb = "^0.8.0"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.7"

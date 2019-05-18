@@ -23,6 +23,6 @@ def read_yaml(filename: str):
     return config
 
 
-def get_config():
-    return read_yaml("config/hyperparams.yml")
+def get_config(file):
+    return read_yaml(file)
 

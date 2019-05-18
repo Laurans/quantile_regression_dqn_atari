@@ -10,6 +10,9 @@ ptan = "^0.3.0"
 torch = "^1.1"
 gym = "^0.12.1"
 atari-py = "^0.1.7"
+opencv-python = "^4.1"
+pyyaml = "^5.1"
+click = "^7.0"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.7"

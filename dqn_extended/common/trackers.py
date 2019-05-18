@@ -32,13 +32,11 @@ class RewardTracker:
         logs["reward_100"] = mean_reward
         logs["reward"] = reward
 
-        wandb.log(logs, step=frame)
-
         if mean_reward > self.stop_reward:
             print("Solved in %d frames!" % frame)
-            return True
+            return True, logs
 
-        return False
+        return False, logs
 
 
 class EpsilonTracker:

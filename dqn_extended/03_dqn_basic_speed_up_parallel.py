@@ -12,7 +12,7 @@ import wandb
 
 def init_logger(params):
     wandb.init(
-        name="dqn_classic_speed_up_steps",
+        name="dqn_classic_speed_up_parallel",
         project="dqn_extended",
         dir="../wandb",
         config=params,

@@ -98,9 +98,9 @@ def main(gpu):
                 batch_weights,
                 net,
                 tgt_net.target_model,
-                params["vmin"],
-                params["vmax"],
-                params["n_atoms"],
+                params["C51"]["vmin"],
+                params["C51"]["vmax"],
+                params["C51"]["n_atoms"],
                 gamma=params["gamma"] ** params["reward_steps"],
                 device=params["device"],
             )

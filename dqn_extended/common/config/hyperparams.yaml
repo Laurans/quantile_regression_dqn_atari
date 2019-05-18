@@ -14,9 +14,9 @@ pong:
     weight_decay: 0.0
   gamma: 0.99
   batch_size: 32
-  train_freq: 4
+  train_freq: 1
   gradient_clip: 10
-  logging_freq: 50000
+  logging_freq: 5000
   reward_steps: 2
   prio_replay_alpha: 0.6
   beta_start: 0.4

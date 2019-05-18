@@ -46,6 +46,7 @@ def main(gpu):
             params["C51"]["delta_z"],
         ),
     )
+    wandb.watch(net)
     net = net.to(params["device"])
     tgt_net = ptan.agent.TargetNet(net)
 
@@ -80,7 +81,7 @@ def main(gpu):
                 success, logs = reward_tracker.reward(new_rewards[0], frame_idx)
                 if frame_idx % params["logging_freq"] < params["train_freq"]:
                     if loss_in_float:
-                        wandb["loss"] = loss_in_float
+                        logs["loss"] = loss_in_float
                     wandb.log(logs, step=frame_idx)
 
                 if success:

@@ -46,7 +46,7 @@ def main(gpu):
             params["C51"]["delta_z"],
         ),
     )
-    wandb.watch(net)
+    wandb.watch(net, log=None)
     net = net.to(params["device"])
     tgt_net = ptan.agent.TargetNet(net)
 
@@ -68,6 +68,7 @@ def main(gpu):
     frame_idx = 0
     loss_in_float = None
 
+    i_episode = 0
     with trackers.RewardTracker(params["stop_reward"]) as reward_tracker:
         while True:
             frame_idx += params["train_freq"]
@@ -78,8 +79,10 @@ def main(gpu):
             new_rewards = exp_source.pop_total_rewards()
 
             if new_rewards:
+                i_episode = (i_episode + 1) % params["logging_freq"]
                 success, logs = reward_tracker.reward(new_rewards[0], frame_idx)
-                if frame_idx % params["logging_freq"] < params["train_freq"]:
+                if i_episode == 0:
+                    print(frame_idx, "logging")
                     if loss_in_float:
                         logs["loss"] = loss_in_float
                     wandb.log(logs, step=frame_idx)
@@ -113,6 +116,7 @@ def main(gpu):
             loss_in_float = float(loss.detach().cpu().numpy())
 
             if frame_idx % params["target_net_sync"] < params["train_freq"]:
+                print("Target sync")
                 tgt_net.sync()
 
 

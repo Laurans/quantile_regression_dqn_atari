@@ -38,7 +38,7 @@ class RewardTracker:
         logs["reward_100"] = mean_reward
         logs["reward"] = reward
 
-        if frame % 100 == 0:
+        if frame % 100 < 4:
             wandb.log(logs, step=frame)
 
         if mean_reward > self.stop_reward:

@@ -77,7 +77,8 @@ def main(gpu):
             loss.backward()
             optimizer.step()
 
-            wandb.log({"loss": float(loss.detach().cpu().numpy())}, step=frame_idx)
+            if frame_idx % 100 < params["train_freq"]:
+                wandb.log({"loss": float(loss.detach().cpu().numpy())}, step=frame_idx)
 
             if frame_idx % params["target_net_sync"] < params["train_freq"]:
                 tgt_net.sync()

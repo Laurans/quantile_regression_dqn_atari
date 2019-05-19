@@ -41,6 +41,29 @@ def calc_loss_dqn(batch, net, tgt_net, gamma, device):
     expected_state_action_values = next_state_values.detach() * gamma + rewards
     return nn.MSELoss()(state_action_values, expected_state_action_values)
 
+
+def calc_loss_double_dqn(batch, net, tgt_net, gamma, device):
+    states, actions, rewards, dones, next_states = unpack_batch(batch)
+
+    states = torch.tensor(states).to(device)
+    next_states = torch.tensor(next_states).to(device)
+    actions = torch.tensor(actions).to(device)
+    rewards = torch.tensor(rewards).to(device)
+    done_mask = torch.ByteTensor(dones).to(device)
+
+    state_action_values = net(states).gather(1, actions.unsqueeze(-1)).squeeze(-1)
+
+    next_states_actions = net(next_states).max(1)[1]
+    next_state_values = (
+        tgt_net(next_states).gather(1, next_states_actions.unsqueeze(-1)).squeeze(-1)
+    )
+
+    next_state_values[done_mask] = 0.0
+
+    expected_state_action_values = next_state_values.detach() * gamma + rewards
+    return nn.MSELoss()(state_action_values, expected_state_action_values)
+
+
 def calc_loss_dqn_prio_replay(batch, batch_weights, net, tgt_net, gamma, device):
     states, actions, rewards, dones, next_states = unpack_batch(batch)
 

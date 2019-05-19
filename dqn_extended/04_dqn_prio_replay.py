@@ -55,7 +55,7 @@ def main(gpu):
     )
 
     frame_idx = 0
-    i_episode = 0
+
     loss_in_float = None
     with trackers.RewardTracker(params["stop_reward"]) as reward_tracker:
         while True:
@@ -70,12 +70,10 @@ def main(gpu):
             if new_rewards:
                 success, logs = reward_tracker.reward(new_rewards[0], frame_idx, selector.epsilon)
 
-                i_episode = (i_episode + 1) % params["logging_freq"]
-                if i_episode == 0:
-                    print(frame_idx, "logging")
-                    if loss_in_float:
-                        logs["loss"] = loss_in_float
-                    wandb.log(logs, step=frame_idx)
+                
+                if loss_in_float:
+                    logs["loss"] = loss_in_float
+                wandb.log(logs, step=frame_idx)
                 
                 if success:
                     break

@@ -55,7 +55,8 @@ def main(gpu):
     )
 
     frame_idx = 0
-
+    i_episode = 0
+    loss_in_float = None
     with trackers.RewardTracker(params["stop_reward"]) as reward_tracker:
         while True:
             frame_idx += params["train_freq"]
@@ -67,7 +68,13 @@ def main(gpu):
             new_rewards = exp_source.pop_total_rewards()
 
             if new_rewards:
-                if reward_tracker.reward(new_rewards[0], frame_idx, selector.epsilon):
+                i_episode = (i_episode + 1) % params["logging_freq"]
+                if i_episode == 0:
+                    print(frame_idx, "logging")
+                    if loss_in_float:
+                        logs["loss"] = loss_in_float
+                success, logs = reward_tracker.reward(new_rewards[0], frame_idx, selector.epsilon)
+                if success:
                     break
 
             if len(buffer) < params["replay_initial"]:
@@ -88,6 +95,8 @@ def main(gpu):
             optimizer.step()
             buffer.update_priorities(batch_indices, sample_prios.data.cpu().numpy())
 
+            loss_in_float = float(loss.detach().cpu().numpy())
+            
             if frame_idx % params["target_net_sync"] < params["train_freq"]:
                 tgt_net.sync()
 

@@ -8,6 +8,7 @@ from torch.nn.utils import clip_grad_norm_
 
 from dqn_extended.common import configreader, neuralnetworks, trackers, losses
 import wandb
+import objgraph
 
 torch.backends.cudnn.benchmark = True
 
@@ -29,7 +30,7 @@ def main(gpu):
     env = gym.make(params["env_name"])
     env = ptan.common.wrappers.wrap_dqn(env)
 
-    net = neuralnetworks.DQN(env.observation_space.shape, env.action_space.n)
+    net = neuralnetworks.DuelingDQN(env.observation_space.shape, env.action_space.n)
     net = net.to(params["device"])
 
     wandb.watch(net, log=None)
@@ -96,6 +97,13 @@ def main(gpu):
 
             if frame_idx % params["target_net_sync"] < params["train_freq"]:
                 tgt_net.sync()
+
+                print("-----------")
+                objgraph.show_growth(limit=10)
+                print("~~")
+                objgraph.show_most_common_types(
+                    objects=objgraph.get_leaking_objects(), limit=10
+                )
 
 
 if __name__ == "__main__":

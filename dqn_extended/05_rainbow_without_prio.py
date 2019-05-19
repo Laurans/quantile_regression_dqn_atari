@@ -85,7 +85,7 @@ def main(gpu):
                 batch,
                 net,
                 tgt_net.target_model,
-                gamma=params["gamma"],
+                gamma=params["gamma"] ** params["reward_steps"],
                 device=params["device"],
             )
             loss.backward()

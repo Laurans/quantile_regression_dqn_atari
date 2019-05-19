@@ -33,10 +33,7 @@ def write_log(writer: SummaryWriter, scalars_dict: dict, step):
     wandb.log(scalars_dict, step=step)
 
 
-def watch_model(
-    writer: SummaryWriter, model: torch.nn.Module, dummy_input_shape: tuple
-):
-    dummy_input = torch.zeros(1, *dummy_input_shape)
+def watch_model(writer: SummaryWriter, model: torch.nn.Module, dummy_input):
     print(dummy_input.shape)
     writer.add_graph(model, dummy_input, True)
     wandb.watch(model, log=None)
@@ -56,7 +53,8 @@ def main(gpu):
     net = neuralnetworks.DQN(env.observation_space.shape, env.action_space.n)
     net = net.to(params["device"])
 
-    watch_model(writer, net, env.observation_space.shape)
+    dummy_input = torch.zeros(1, *env.observation_space.shape).to(params["device"])
+    watch_model(writer, net, dummy_input)
 
     tgt_net = ptan.agent.TargetNet(net)
     selector = ptan.actions.EpsilonGreedyActionSelector(epsilon=params["epsilon_start"])

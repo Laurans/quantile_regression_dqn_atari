@@ -15,6 +15,7 @@ click = "^7.0"
 torch = {path = "../../../wheels/torch-1.1.0-cp37-cp37m-linux_x86_64.whl"}
 torchvision = "^0.2.2"
 wandb = "^0.8.0"
+tensorboardX = "^1.6"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.7"

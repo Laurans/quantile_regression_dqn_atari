@@ -98,13 +98,6 @@ def main(gpu):
             if frame_idx % params["target_net_sync"] < params["train_freq"]:
                 tgt_net.sync()
 
-                print("-----------")
-                objgraph.show_growth(limit=10)
-                print("~~")
-                objgraph.show_most_common_types(
-                    objects=objgraph.get_leaking_objects(), limit=10
-                )
-
 
 if __name__ == "__main__":
     main()

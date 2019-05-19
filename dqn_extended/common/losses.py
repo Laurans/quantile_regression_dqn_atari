@@ -53,10 +53,8 @@ def calc_loss_double_dqn(batch, net, tgt_net, gamma, device):
 
     state_action_values = net(states).gather(1, actions.unsqueeze(-1)).squeeze(-1)
 
-    next_states_actions = net(next_states).max(1)[1]
-    next_state_values = (
-        tgt_net(next_states).gather(1, next_states_actions.unsqueeze(-1)).squeeze(-1)
-    )
+    next_states_actions = net(next_states).max(1)[1].unsqueeze(-1)
+    next_state_values = tgt_net(next_states).gather(1, next_states_actions).squeeze(-1)
 
     next_state_values[done_mask] = 0.0
 

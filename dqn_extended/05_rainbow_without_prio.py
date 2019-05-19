@@ -48,7 +48,7 @@ def main(gpu):
     env = gym.make(params["env_name"])
     env = ptan.common.wrappers.wrap_dqn(env)
 
-    net = neuralnetworks.DQN(env.observation_space.shape, env.action_space.n)
+    net = neuralnetworks.DuelingDQN(env.observation_space.shape, env.action_space.n)
     net = net.to(params["device"])
 
     watch_model(net)

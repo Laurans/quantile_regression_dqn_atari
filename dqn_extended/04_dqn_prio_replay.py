@@ -84,7 +84,7 @@ def main(gpu):
                 continue
 
             optimizer.zero_grad()
-            batch, batch_indices, batch_weights = buffer.sample(params["batch_size"])
+            batch, batch_indices, batch_weights = buffer.sample(params["batch_size"], beta)
             loss, sample_prios = losses.calc_loss_dqn_prio_replay(
                 batch,
                 batch_weights,

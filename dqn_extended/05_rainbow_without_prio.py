@@ -22,7 +22,7 @@ def init_logger(params):
     logs_dir = "../logs"
     wandb.init(name=name, project=project, dir=logs_dir, config=params)
 
-    writer = SummaryWriter(logs_dir + "/" + name)
+    writer = SummaryWriter(logs_dir + "/tensorboard/" + name)
     return writer
 
 
@@ -36,7 +36,8 @@ def write_log(writer: SummaryWriter, scalars_dict: dict, step):
 def watch_model(
     writer: SummaryWriter, model: torch.nn.Module, dummy_input_shape: tuple
 ):
-    dummy_input = (torch.Tensor(1, *dummy_input_shape),)
+    dummy_input = torch.zeros(1, *dummy_input_shape)
+    print(dummy_input.shape)
     writer.add_graph(model, dummy_input, True)
     wandb.watch(model, log=None)
 

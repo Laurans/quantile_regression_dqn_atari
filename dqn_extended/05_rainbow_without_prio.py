@@ -8,6 +8,7 @@ import torch.optim as optim
 import wandb
 from tensorboardX import SummaryWriter
 from torch.nn.utils import clip_grad_norm_
+from coolname import generate
 
 from dqn_extended.common import configreader, losses, neuralnetworks, trackers
 
@@ -20,9 +21,10 @@ def init_logger(params):
     project = "dqn_extended"
     name = "dqn_dueling"
     logs_dir = "../logs"
+    uid = "_".join([generate()[0], name])
     wandb.init(name=name, project=project, dir=logs_dir, config=params)
 
-    writer = SummaryWriter(logs_dir + "/tensorboard/" + name)
+    writer = SummaryWriter(logs_dir + "/tensorboard/" + uid)
     return writer
 
 
@@ -54,8 +56,7 @@ def main(gpu):
     watch_model(net)
 
     tgt_net = ptan.agent.TargetNet(net)
-    selector = ptan.actions.EpsilonGreedyActionSelector(epsilon=params["epsilon_start"])
-    epsilon_tracker = trackers.EpsilonTracker(selector, params)
+    selector = ptan.actions.ArgmaxActionSelector()
     agent = ptan.agent.DQNAgent(net, selector, device=params["device"])
 
     exp_source = ptan.experience.ExperienceSourceFirstLast(
@@ -76,15 +77,13 @@ def main(gpu):
         while True:
             frame_idx += params["train_freq"]
             buffer.populate(params["train_freq"])
-            epsilon_tracker.frame(frame_idx)
 
             new_rewards = exp_source.pop_total_rewards()
 
             if new_rewards:
                 i_episode = (i_episode + 1) % params["logging_freq"]
-                success, logs = reward_tracker.reward(
-                    new_rewards[0], frame_idx, selector.epsilon
-                )
+                success, logs = reward_tracker.reward(new_rewards[0], frame_idx)
+
                 if loss_in_float:
                     logs["loss"] = loss_in_float
 

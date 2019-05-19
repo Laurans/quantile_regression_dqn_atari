@@ -51,11 +51,11 @@ class DuelingDQN(nn.Module):
 
         conv_out_size = self._get_conv_out(input_shape)
         self.fc_adv = nn.Sequential(
-            nn.Linear(conv_out_size, 512), nn.ReLU(), nn.Linear(512, n_actions)
+            NoisyLinear(conv_out_size, 512), nn.ReLU(), NoisyLinear(512, n_actions)
         )
 
         self.fc_val = nn.Sequential(
-            nn.Linear(conv_out_size, 512), nn.ReLU(), nn.Linear(512, 1)
+            NoisyLinear(conv_out_size, 512), nn.ReLU(), NoisyLinear(512, 1)
         )
 
     def _get_conv_out(self, shape):
@@ -191,4 +191,3 @@ class RainbowDQN(nn.Module):
 
     def apply_softmax(self, t):
         return self.softmax(t.view(-1, self.n_atoms)).view(t.size())
-

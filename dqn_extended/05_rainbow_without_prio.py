@@ -14,7 +14,7 @@ torch.backends.cudnn.benchmark = True
 
 def init_logger(params):
     wandb.init(
-        name="dqn_debug",
+        name="dqn_classic_d",
         project="dqn_extended",
         dir="../wandb",
         config=params,
@@ -69,7 +69,7 @@ def main(gpu):
                     logs["loss"] = loss_in_float
                 wandb.log(logs, step=frame_idx)
 
-                if reward_tracker.reward(new_rewards[0], frame_idx, selector.epsilon):
+                if success:
                     break
 
             if len(buffer) < params["replay_initial"]:

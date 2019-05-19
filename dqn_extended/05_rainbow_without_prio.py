@@ -18,7 +18,7 @@ os.environ["WANDB_MODE"] = "dryrun"
 
 def init_logger(params):
     project = "dqn_extended"
-    name = "dqn_double"
+    name = "dqn_dueling"
     logs_dir = "../logs"
     wandb.init(name=name, project=project, dir=logs_dir, config=params)
 

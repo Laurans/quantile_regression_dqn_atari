@@ -44,6 +44,14 @@ version = "7.0"
 
 [[package]]
 category = "main"
+description = "Random name and slug generator"
+name = "coolname"
+optional = false
+python-versions = "*"
+version = "1.1.0"
+
+[[package]]
+category = "main"
 description = "Python bindings for the docker credentials store API"
 name = "docker-pycreds"
 optional = false
@@ -474,7 +482,7 @@ argh = ">=0.24.1"
 pathtools = ">=0.1.1"
 
 [metadata]
-content-hash = "7ab412b2758b1a053b5f458c4863450af4143b35a1d138369de424d076b9dbdc"
+content-hash = "f625cc47c6904d8d2ce26758cef1f5f688cf7e98f48c83342a5fc55def5bb3a5"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -483,6 +491,7 @@ atari-py = ["14670d021029355d541c35e28b1f2d075e42716d0b867543c0195707c55452f6", 
 certifi = ["59b7658e26ca9c7339e00f8f4636cdfe59d34fa37b9b04f6f9e9926b3cece1a5", "b26104d6835d1f5e49452a26eb2ff87fe7090b89dfcaee5ea2212697e1e1d7ae"]
 chardet = ["84ab92ed1c4d4f16916e05906b6b75a6c0fb5db821cc65e70cbd64a3e2a5eaae", "fc323ffcaeaed0e0a02bf4d117757b98aed530d9ed4531e3e15460124c106691"]
 click = ["2335065e6395b9e67ca716de5f7526736bfa6ceead690adf616d925bdc622b13", "5b94b49521f6456670fdb30cd82a4eca9412788a93fa6dd6df72c94d5a8ff2d7"]
+coolname = ["410fe6ea9999bf96f2856ef0c726d5f38782bbefb7bb1aca0e91e0dc98ed09e3", "e6a83a0ac88640f4f3d2070438dbe112fe80cfebc119c93bd402976ec84c0978"]
 docker-pycreds = ["6ce3270bcaf404cc4c3e27e4b6c70d3521deae82fb508767870fdbf772d584d4", "7266112468627868005106ec19cd0d722702d2b7d5912a28e19b826c3d37af49"]
 entrypoints = ["589f874b313739ad35be6e0cd7efde2a4e9b6fea91edcc34e58ecbb8dbe56d19", "c70dd71abe5a8c85e55e12c19bd91ccfeec11a6e99044204511f9ed547d48451"]
 flake8 = ["859996073f341f2670741b51ec1e67a01da142831aa1fdc6242dbf88dffbe661", "a796a115208f5c03b18f332f7c11729812c8c3ded6c46319c59b53efd3819da8"]

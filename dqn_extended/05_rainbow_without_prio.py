@@ -40,7 +40,7 @@ def main(gpu):
     agent = ptan.agent.DQNAgent(net, selector, device=params["device"])
 
     exp_source = ptan.experience.ExperienceSourceFirstLast(
-        env, agent, gamma=params["gamma"], steps_count=1
+        env, agent, gamma=params["gamma"], steps_count=params["reward_steps"]
     )
     buffer = ptan.experience.ExperienceReplayBuffer(
         exp_source, buffer_size=params["replay_size"]

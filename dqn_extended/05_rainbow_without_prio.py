@@ -14,10 +14,7 @@ torch.backends.cudnn.benchmark = True
 
 def init_logger(params):
     wandb.init(
-        name="dqn_classic_d",
-        project="dqn_extended",
-        dir="../wandb",
-        config=params,
+        name="dqn_classic_d", project="dqn_extended", dir="../wandb", config=params
     )
 
 
@@ -55,6 +52,7 @@ def main(gpu):
     frame_idx = 0
 
     loss_in_float = None
+    i_episode = 0
     with trackers.RewardTracker(params["stop_reward"]) as reward_tracker:
         while True:
             frame_idx += params["train_freq"]
@@ -64,12 +62,18 @@ def main(gpu):
             new_rewards = exp_source.pop_total_rewards()
 
             if new_rewards:
-                success, logs = reward_tracker.reward(new_rewards[0], frame_idx, selector.epsilon)
+                i_episode = (i_episode + 1) % params["logging_freq"]
+                success, logs = reward_tracker.reward(
+                    new_rewards[0], frame_idx, selector.epsilon
+                )
                 if loss_in_float:
                     logs["loss"] = loss_in_float
-                wandb.log(logs, step=frame_idx)
+
+                if i_episode == 0:
+                    wandb.log(logs, step=frame_idx)
 
                 if success:
+                    wandb.log(logs, step=frame_idx)
                     break
 
             if len(buffer) < params["replay_initial"]:

@@ -18,10 +18,10 @@ pong:
   gradient_clip: 10
   logging_freq: 10 #unit: episodes
   reward_steps: 2
-  prio_replay_alpha: 0.6
-  beta_start: 0.4
-  beta_frames: 100000
-  C51:
-    vmax: 10
-    vmin: -10
-    n_atoms: 51
+  # prio_replay_alpha: 0.6
+  # beta_start: 0.4
+  # beta_frames: 100000
+  # C51:
+  #  vmax: 10
+  #  vmin: -10
+  #  n_atoms: 51

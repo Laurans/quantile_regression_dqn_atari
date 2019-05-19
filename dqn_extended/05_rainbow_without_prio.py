@@ -81,7 +81,7 @@ def main(gpu):
 
             optimizer.zero_grad()
             batch = buffer.sample(params["batch_size"])
-            loss = losses.calc_loss_dqn(
+            loss = losses.calc_loss_double_dqn(
                 batch,
                 net,
                 tgt_net.target_model,

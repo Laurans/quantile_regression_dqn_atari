@@ -73,7 +73,10 @@ def calc_loss_dqn_prio_replay(batch, batch_weights, net, tgt_net, gamma, device)
     batch_weights = torch.tensor(batch_weights).to(device)
 
     state_action_values = net(states).gather(1, actions.unsqueeze(-1)).squeeze(-1)
-    next_state_values = tgt_net(next_states).max(1)[0]
+
+    next_states_actions = net(next_states).max(1)[1].unsqueeze(-1)
+    next_state_values = tgt_net(next_states).gather(1, next_states_actions).squeeze(-1)
+
     next_state_values[done_mask] = 0.0
 
     expected_state_action_values = next_state_values.detach() * gamma + rewards

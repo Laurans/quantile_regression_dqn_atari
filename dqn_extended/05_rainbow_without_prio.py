@@ -19,7 +19,7 @@ os.environ["WANDB_MODE"] = "dryrun"
 
 def init_logger(params):
     project = "dqn_extended"
-    name = "dqn_dueling"
+    name = "dqn_prio_replay"
     logs_dir = "../logs"
     uid = "_".join([generate()[0], name])
     wandb.init(name=name, project=project, dir=logs_dir, config=params)
@@ -37,6 +37,10 @@ def write_log(writer: SummaryWriter, scalars_dict: dict, step):
 
 def watch_model(model: torch.nn.Module):
     wandb.watch(model, log=None)
+
+
+def get_new_beta(frame_idx, beta_start, beta_frames):
+    return min(1.0, beta_start + frame_idx * (1.0 - beta_start) / beta_frames)
 
 
 @click.command()
@@ -62,8 +66,8 @@ def main(gpu):
     exp_source = ptan.experience.ExperienceSourceFirstLast(
         env, agent, gamma=params["gamma"], steps_count=params["reward_steps"]
     )
-    buffer = ptan.experience.ExperienceReplayBuffer(
-        exp_source, buffer_size=params["replay_size"]
+    buffer = ptan.experience.PrioritizedReplayBuffer(
+        exp_source, buffer_size=params["replay_size"], alpha=params["prio_replay_alpha"]
     )
     optimizer = optim.Adam(
         net.parameters(), lr=params["learning_rate"], **params["optim_params"]
@@ -77,6 +81,7 @@ def main(gpu):
         while True:
             frame_idx += params["train_freq"]
             buffer.populate(params["train_freq"])
+            beta = get_new_beta(frame_idx, params["beta_start"], params["beta_frames"])
 
             new_rewards = exp_source.pop_total_rewards()
 
@@ -98,9 +103,12 @@ def main(gpu):
                 continue
 
             optimizer.zero_grad()
-            batch = buffer.sample(params["batch_size"])
-            loss = losses.calc_loss_double_dqn(
+            batch, batch_indices, batch_weights = buffer.sample(
+                params["batch_size"], beta
+            )
+            loss, sample_prios = losses.calc_loss_dqn_prio_replay(
                 batch,
+                batch_weights,
                 net,
                 tgt_net.target_model,
                 gamma=params["gamma"] ** params["reward_steps"],
@@ -109,6 +117,7 @@ def main(gpu):
             loss.backward()
             clip_grad_norm_(net.parameters(), params["gradient_clip"])
             optimizer.step()
+            buffer.update_priorities(batch_indices, sample_prios.data.cpu().numpy())
 
             loss_in_float = float(loss.detach().cpu().numpy())
 

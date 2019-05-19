@@ -6,7 +6,6 @@ authors = ["Anaelle Laurans <16943368+Laurans@users.noreply.github.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-ptan = "^0.3.0"
 gym = "^0.12.1"
 atari-py = "^0.1.7"
 opencv-python = "^4.1"
@@ -17,6 +16,7 @@ torchvision = "^0.2.2"
 wandb = "^0.8.0"
 tensorboardX = "^1.6"
 coolname = "^1.1"
+ptan = {git = "https://github.com/Shmuma/ptan.git"}
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.7"

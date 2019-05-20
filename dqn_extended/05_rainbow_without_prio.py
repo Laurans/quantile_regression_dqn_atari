@@ -48,6 +48,7 @@ def get_new_beta(frame_idx, beta_start, beta_frames):
 def main(gpu):
     params = configreader.get_config("./common/config/hyperparams.yaml")["pong"]
     params["device"] = f"cuda:{gpu}"
+    params["train_freq"] = 2
     params["batch_size"] *= params["train_freq"]
     writer = init_logger(params)
 
@@ -123,6 +124,9 @@ def main(gpu):
 
             if frame_idx % params["target_net_sync"] < params["train_freq"]:
                 tgt_net.sync()
+
+            if frame_idx > 1.5e6:
+                break
 
 
 if __name__ == "__main__":

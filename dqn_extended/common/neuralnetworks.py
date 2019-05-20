@@ -36,7 +36,7 @@ class DQN(nn.Module):
 
 
 class DuelingDQN(nn.Module):
-    def __init__(self, input_shape, n_actions):
+    def __init__(self, input_shape, n_actions, noisy_nets_sigma):
 
         super(DuelingDQN, self).__init__()
 
@@ -51,11 +51,15 @@ class DuelingDQN(nn.Module):
 
         conv_out_size = self._get_conv_out(input_shape)
         self.fc_adv = nn.Sequential(
-            NoisyLinear(conv_out_size, 512), nn.ReLU(), NoisyLinear(512, n_actions)
+            NoisyLinear(conv_out_size, 512, noisy_nets_sigma),
+            nn.ReLU(),
+            NoisyLinear(512, n_actions, noisy_nets_sigma),
         )
 
         self.fc_val = nn.Sequential(
-            NoisyLinear(conv_out_size, 512), nn.ReLU(), NoisyLinear(512, 1)
+            NoisyLinear(conv_out_size, 512, noisy_nets_sigma),
+            nn.ReLU(),
+            NoisyLinear(512, 1, noisy_nets_sigma),
         )
 
     def _get_conv_out(self, shape):

@@ -8,7 +8,7 @@ pong:
   epsilon_frames: 1e5
   epsilon_start: 1.0
   epsilon_final: 0.02
-  learning_rate: 0.000025
+  learning_rate: 0.00025
   optim_params:
     eps: 1e-8
     weight_decay: 0.0

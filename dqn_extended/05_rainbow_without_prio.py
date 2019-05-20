@@ -22,6 +22,7 @@ def init_logger(params):
     name = "dqn_prio_replay"
     logs_dir = "../logs"
     uid = "_".join([generate()[0], name])
+    print("Exp name", uid)
     wandb.init(name=name, project=project, dir=logs_dir, config=params)
 
     writer = SummaryWriter(logs_dir + "/tensorboard/" + uid)
@@ -48,9 +49,7 @@ def get_new_beta(frame_idx, beta_start, beta_frames):
 def main(gpu):
     params = configreader.get_config("./common/config/hyperparams.yaml")["pong"]
     params["device"] = f"cuda:{gpu}"
-    params["train_freq"] = 4
     params["batch_size"] *= params["train_freq"]
-    params["learning_rate"] /= params["train_freq"]
     writer = init_logger(params)
 
     env = gym.make(params["env_name"])

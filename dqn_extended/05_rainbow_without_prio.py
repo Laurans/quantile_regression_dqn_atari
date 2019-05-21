@@ -67,7 +67,7 @@ def main(gpu):
 
     tgt_net = ptan.agent.TargetNet(net)
     selector = ptan.actions.ArgmaxActionSelector()
-    agent = ptan.agent.DQNAgent(net, selector, device=params["device"])
+    agent = ptan.agent.DQNAgent(net.qvals, selector, device=params["device"])
 
     exp_source = ptan.experience.ExperienceSourceFirstLast(
         env, agent, gamma=params["gamma"], steps_count=params["reward_steps"]

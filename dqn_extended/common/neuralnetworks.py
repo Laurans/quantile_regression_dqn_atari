@@ -199,7 +199,7 @@ class RainbowDQN(nn.Module):
 
 class RainbowQRDQN(nn.Module):
     def __init__(self, input_shape, n_actions, noisy_nets_sigma, n_quantiles):
-        super(RainbowDQN, self).__init__()
+        super(RainbowQRDQN, self).__init__()
         self.n_quantiles = n_quantiles
 
         self.conv = nn.Sequential(

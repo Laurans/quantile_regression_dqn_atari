@@ -84,6 +84,10 @@ def calc_loss_dqn_prio_replay(batch, batch_weights, net, tgt_net, gamma, device)
     return losses.mean(), losses + 1e-5
 
 
+def huber_loss(x, delta=1):
+    return torch.where(x.abs() < delta, 0.5 * x ** 2, delta * (x.abs() - 0.5 * delta))
+
+
 def calc_loss_qr(batch, batch_weights, net, tgt_net, gamma, num_quantiles, device):
     states, actions, rewards, dones, next_states = unpack_batch(batch)
     batch_size = len(batch)
@@ -93,26 +97,30 @@ def calc_loss_qr(batch, batch_weights, net, tgt_net, gamma, num_quantiles, devic
     actions = torch.LongTensor(actions).to(device)
     rewards = torch.tensor(rewards).to(device)
     done_mask = torch.ByteTensor(dones).to(device)
+    batch_weights = torch.tensor(batch_weights).to(device)
 
     cummulative_density = (
-        (2 * torch.range(num_quantiles) + 1 / (2 * num_quantiles))
+        (torch.range(0, 1 - 1 / num_quantiles, 1 / num_quantiles) + 0.5 / num_quantiles)
         .view(1, -1)
         .to(device)
     )
 
     quantiles_next = tgt_net(next_states)
-    a_next = net.qvals_from_quant(next_states).max(1)[1]
-    quantiles_next = quantiles_next[torch.range(batch_size), a_next.data]
+    a_next = net.qvals(next_states).max(1)[1]
+    quantiles_next = quantiles_next[range(0, batch_size), a_next]
     quantiles_next[done_mask] = 0.0
-    expected_quantiles = quantiles_next.detach() * gamma + rewards
+    expected_quantiles = quantiles_next.detach() * gamma + rewards.unsqueeze(-1)
 
-    quantiles = net(states)[torch.range(batch_size), actions]
+    quantiles = net(states)[range(batch_size), actions]
 
     print("Quantiles_next", quantiles_next.shape, "Quantiles", quantiles.shape)
 
-    diff = None
-    huber_mul = None
-    huber_loss = None
-    import pdb
+    diff = expected_quantiles.t().unsqueeze(-1) - quantiles
+    huber = huber_loss(diff)
+    huber_mul = (cummulative_density - (diff.detach() < 0).float()).abs()
+    losses = huber * huber_mul
+    losses = losses.transpose(0, 1).sum(1, 2)
+    losses *= batch_weights
 
-    pdb.set_trace()
+    return losses.mean(), losses + 1e-5
+

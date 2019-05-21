@@ -100,10 +100,7 @@ def calc_loss_qr(batch, batch_weights, net, tgt_net, gamma, num_quantiles, devic
     batch_weights = torch.tensor(batch_weights).to(device)
 
     cummulative_density = (
-        (
-            torch.arange(0, 1 - 1 / num_quantiles, 1 / num_quantiles)
-            + 0.5 / num_quantiles
-        )
+        (torch.arange(0, 1, 1 / num_quantiles) + 0.5 / num_quantiles)
         .view(1, -1)
         .to(device)
     )

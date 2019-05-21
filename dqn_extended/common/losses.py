@@ -100,7 +100,10 @@ def calc_loss_qr(batch, batch_weights, net, tgt_net, gamma, num_quantiles, devic
     batch_weights = torch.tensor(batch_weights).to(device)
 
     cummulative_density = (
-        (torch.range(0, 1 - 1 / num_quantiles, 1 / num_quantiles) + 0.5 / num_quantiles)
+        (
+            torch.arange(0, 1 - 1 / num_quantiles, 1 / num_quantiles)
+            + 0.5 / num_quantiles
+        )
         .view(1, -1)
         .to(device)
     )
@@ -113,13 +116,11 @@ def calc_loss_qr(batch, batch_weights, net, tgt_net, gamma, num_quantiles, devic
 
     quantiles = net(states)[range(batch_size), actions]
 
-    print("Quantiles_next", quantiles_next.shape, "Quantiles", quantiles.shape)
-
     diff = expected_quantiles.t().unsqueeze(-1) - quantiles
     huber = huber_loss(diff)
     huber_mul = (cummulative_density - (diff.detach() < 0).float()).abs()
     losses = huber * huber_mul
-    losses = losses.transpose(0, 1).sum(1, 2)
+    losses = losses.transpose(0, 1).sum((1, 2))
     losses *= batch_weights
 
     return losses.mean(), losses + 1e-5

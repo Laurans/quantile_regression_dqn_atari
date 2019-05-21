@@ -19,7 +19,7 @@ os.environ["WANDB_MODE"] = "dryrun"
 
 def init_logger(params):
     project = "dqn_extended"
-    name = "dqn_prio_replay"
+    name = "qrdqn_rainbow"
     logs_dir = "../logs"
     uid = "_".join([generate()[0], name])
     print("Exp name", uid)

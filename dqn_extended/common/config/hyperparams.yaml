@@ -3,12 +3,12 @@ pong:
   stop_reward: 18.0
   run_name: pong
   replay_size: 100000
-  replay_initial: 80000
+  replay_initial: 1000
   target_net_sync: 32000
   epsilon_frames: 1e5
   epsilon_start: 1.0
   epsilon_final: 0.02
-  learning_rate: 0.0000625
+  learning_rate: 0.0001
   optim_params:
     eps: 1.5e-4
     weight_decay: 0.0
@@ -17,11 +17,11 @@ pong:
   train_freq: 1
   gradient_clip: 10
   logging_freq: 10 #unit: episodes
-  reward_steps: 3
+  reward_steps: 2
   prio_replay_alpha: 0.5
   beta_start: 0.4
   beta_frames: 100000
-  noisy_nets_sigma: 0.5
+  noisy_nets_sigma: 0.017
   # C51:
   #  vmax: 10
   #  vmin: -10

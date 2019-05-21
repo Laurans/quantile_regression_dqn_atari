@@ -4,17 +4,17 @@ pong:
   run_name: pong
   replay_size: 100000
   replay_initial: 1000
-  target_net_sync: 32000
+  target_net_sync: 1000
   epsilon_frames: 1e5
   epsilon_start: 1.0
   epsilon_final: 0.02
-  learning_rate: 0.0001
+  learning_rate: 0.000025
   optim_params:
-    eps: 1.5e-4
+    eps: 1e-8
     weight_decay: 0.0
   gamma: 0.99
   batch_size: 32
-  train_freq: 1
+  train_freq: 4
   gradient_clip: 10
   logging_freq: 10 #unit: episodes
   reward_steps: 2
@@ -22,7 +22,4 @@ pong:
   beta_start: 0.4
   beta_frames: 100000
   noisy_nets_sigma: 0.017
-  # C51:
-  #  vmax: 10
-  #  vmin: -10
-  #  n_atoms: 51
+  n_quantiles: 51

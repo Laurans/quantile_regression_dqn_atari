@@ -55,8 +55,11 @@ def main(gpu):
     env = gym.make(params["env_name"])
     env = ptan.common.wrappers.wrap_dqn(env)
 
-    net = neuralnetworks.DuelingDQN(
-        env.observation_space.shape, env.action_space.n, params["noisy_nets_sigma"]
+    net = neuralnetworks.RainbowQRDQN(
+        env.observation_space.shape,
+        env.action_space.n,
+        params["noisy_nets_sigma"],
+        params["n_quantiles"],
     )
     net = net.to(params["device"])
 
@@ -109,12 +112,13 @@ def main(gpu):
             batch, batch_indices, batch_weights = buffer.sample(
                 params["batch_size"], beta
             )
-            loss, sample_prios = losses.calc_loss_dqn_prio_replay(
+            loss, sample_prios = losses.calc_loss_qr(
                 batch,
                 batch_weights,
                 net,
                 tgt_net.target_model,
                 gamma=params["gamma"] ** params["reward_steps"],
+                num_quantiles=params["n_quantiles"],
                 device=params["device"],
             )
             loss.backward()

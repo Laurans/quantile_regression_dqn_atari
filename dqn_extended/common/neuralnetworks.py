@@ -195,3 +195,42 @@ class RainbowDQN(nn.Module):
 
     def apply_softmax(self, t):
         return self.softmax(t.view(-1, self.n_atoms)).view(t.size())
+
+
+class RainbowQRDQN(nn.Module):
+    def __init__(self, input_shape, n_actions, noisy_nets_sigma, n_quantiles):
+        super(RainbowDQN, self).__init__()
+        self.n_quantiles = n_quantiles
+
+        self.conv = nn.Sequential(
+            nn.Conv2d(input_shape[0], 32, kernel_size=8, stride=4),
+            nn.ReLU(),
+            nn.Conv2d(32, 64, kernel_size=4, stride=2),
+            nn.ReLU(),
+            nn.Conv2d(64, 64, kernel_size=3, stride=1),
+            nn.ReLU(),
+        )
+
+        conv_out_size = self._get_conv_out(input_shape)
+
+        self.fc = nn.Sequential(
+            NoisyLinear(conv_out_size, 512, noisy_nets_sigma),
+            nn.ReLU(),
+            NoisyLinear(512, n_actions * n_quantiles, noisy_nets_sigma),
+        )
+
+    def _get_conv_out(self, shape):
+        o = self.conv(torch.zeros(1, *shape))
+        return int(np.prod(o.size()))
+
+    def forward(self, x):
+        batch_size = x.size()[0]
+        fx = x.float() / 255
+        conv_out = self.conv(fx).view(batch_size, -1)
+        return self.fc(conv_out).view(batch_size, -1, self.n_quantiles)
+
+    def qvals(self, x):
+        return self.qvals_from_quant(self(x))
+
+    def qvals_from_quant(self, quantiles):
+        return quantiles.mean(dim=2)

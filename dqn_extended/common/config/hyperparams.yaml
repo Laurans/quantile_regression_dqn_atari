@@ -14,7 +14,7 @@ pong:
     weight_decay: 0.0
   gamma: 0.99
   batch_size: 32
-  train_freq: 4
+  train_freq: 1
   gradient_clip: 10
   logging_freq: 10 #unit: episodes
   reward_steps: 2

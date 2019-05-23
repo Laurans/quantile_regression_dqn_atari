@@ -45,7 +45,8 @@ def watch_model(model: torch.nn.Module):
 def main(gpu):
     params = configreader.get_config("./common/config/hyperparams.yaml")["pong"]
     params["device"] = f"cuda:{gpu}"
-    # params["batch_size"] *= params["train_freq"]
+    params["batch_size"] *= params["train_freq"]
+    params["learning_rate"] *= params["train_freq"]
     writer = init_logger(params)
 
     env = gym.make(params["env_name"])

@@ -234,3 +234,42 @@ class RainbowQRDQN(nn.Module):
 
     def qvals_from_quant(self, quantiles):
         return quantiles.mean(dim=2)
+
+
+class QRDQN(nn.Module):
+    def __init__(self, input_shape, n_actions, n_quantiles):
+        super(QRDQN, self).__init__()
+        self.n_quantiles = n_quantiles
+
+        self.conv = nn.Sequential(
+            nn.Conv2d(input_shape[0], 32, kernel_size=8, stride=4),
+            nn.ReLU(),
+            nn.Conv2d(32, 64, kernel_size=4, stride=2),
+            nn.ReLU(),
+            nn.Conv2d(64, 64, kernel_size=3, stride=1),
+            nn.ReLU(),
+        )
+
+        conv_out_size = self._get_conv_out(input_shape)
+
+        self.fc = nn.Sequential(
+            nn.Linear(conv_out_size, 512),
+            nn.ReLU(),
+            nn.Linear(512, n_actions * n_quantiles),
+        )
+
+    def _get_conv_out(self, shape):
+        o = self.conv(torch.zeros(1, *shape))
+        return int(np.prod(o.size()))
+
+    def forward(self, x):
+        batch_size = x.size()[0]
+        fx = x.float() / 255
+        conv_out = self.conv(fx).view(batch_size, -1)
+        return self.fc(conv_out).view(batch_size, -1, self.n_quantiles)
+
+    def qvals(self, x):
+        return self.qvals_from_quant(self(x))
+
+    def qvals_from_quant(self, quantiles):
+        return quantiles.mean(dim=2)

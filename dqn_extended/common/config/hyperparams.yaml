@@ -2,24 +2,26 @@ pong:
   env_name: PongNoFrameskip-v4
   stop_reward: 18.0
   run_name: pong
-  replay_size: 100000
-  replay_initial: 1000
-  target_net_sync: 1000
-  epsilon_frames: 1e5
+  replay_size: 1000000
+  replay_initial: 20000
+  target_net_sync: 8000
+  epsilon_frames: 250000
   epsilon_start: 1.0
-  epsilon_final: 0.02
-  learning_rate: 0.000025
+  epsilon_final: 0.01
+  learning_rate: 0.0000625
   optim_params:
-    eps: 1e-8
+    eps: 0.00015
     weight_decay: 0.0
   gamma: 0.99
   batch_size: 32
-  train_freq: 1
+  train_freq: 4
   gradient_clip: 10
   logging_freq: 10 #unit: episodes
-  reward_steps: 2
-  prio_replay_alpha: 0.5
-  beta_start: 0.4
-  beta_frames: 100000
-  noisy_nets_sigma: 0.017
+  reward_steps: 3
+  # prio_replay_alpha: 0.5
+  # beta_start: 0.4
+  # beta_frames: 100000
+  # noisy_nets_sigma: 0.017
   n_quantiles: 51
+  max_steps_per_episode: 2700
+  # sticky_actions: 0.25

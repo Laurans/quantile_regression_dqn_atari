@@ -47,6 +47,8 @@ def main(gpu):
     params["device"] = f"cuda:{gpu}"
     params["batch_size"] *= params["train_freq"]
     params["learning_rate"] *= params["train_freq"]
+    params["optim_params"]["eps"] *= params["train_freq"]
+    params["optim_params"]["weight_decay"] *= params["train_freq"]
     writer = init_logger(params)
 
     env = gym.make(params["env_name"])

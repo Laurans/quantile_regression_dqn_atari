@@ -31,6 +31,8 @@ class Logger:
         writer = SummaryWriter(logs_dir + "/tensorboard/" + uid)
         self.uid = uid
         self.logs_dir = logs_dir
+        path = self.logs_dir + f"/models/{self.uid}/"
+        os.makedirs(path)
         return writer
 
     def write_log(self, writer: SummaryWriter, scalars_dict: dict, step):
@@ -44,7 +46,6 @@ class Logger:
 
     def save_model(self, model, step):
         path = self.logs_dir + f"/models/{self.uid}/"
-        os.makedirs(path)
         torch.save(model.state_dict(), path + f"{step}.pth")
 
 

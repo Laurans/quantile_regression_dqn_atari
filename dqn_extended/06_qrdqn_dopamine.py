@@ -17,27 +17,35 @@ torch.backends.cudnn.benchmark = True
 os.environ["WANDB_MODE"] = "dryrun"
 
 
-def init_logger(params):
-    project = "dqn_extended"
-    name = "qrdqn_dopamine"
-    logs_dir = "../logs"
-    uid = "_".join([generate()[0], name])
-    print("Exp name", uid)
-    wandb.init(name=name, project=project, dir=logs_dir, config=params)
+class Logger:
+    def init_logger(self, params):
+        project = "dqn_extended"
+        name = "qrdqn_dopamine_space_invaders"
+        logs_dir = "../logs"
+        uid = "_".join([generate()[0], name])
+        print("Exp name", uid)
+        wandb.init(
+            name=name, project=project, dir=logs_dir, config=params, tensorboard=True
+        )
 
-    writer = SummaryWriter(logs_dir + "/tensorboard/" + uid)
-    return writer
+        writer = SummaryWriter(logs_dir + "/tensorboard/" + uid)
+        self.uid = uid
+        self.logs_dir = logs_dir
+        return writer
 
+    def write_log(self, writer: SummaryWriter, scalars_dict: dict, step):
+        for key, value in scalars_dict.items():
+            writer.add_scalar(key, value, global_step=step)
 
-def write_log(writer: SummaryWriter, scalars_dict: dict, step):
-    for key, value in scalars_dict.items():
-        writer.add_scalar(key, value, global_step=step)
+        wandb.log(scalars_dict, step=step)
 
-    wandb.log(scalars_dict, step=step)
+    def watch_model(self, model: torch.nn.Module):
+        wandb.watch(model, log=None)
 
-
-def watch_model(model: torch.nn.Module):
-    wandb.watch(model, log=None)
+    def save_model(self, model, step):
+        path = self.logs_dir + f"/models/{self.uid}/"
+        os.makedirs(path)
+        torch.save(model.state_dict(), path + f"{step}.pth")
 
 
 @click.command()
@@ -49,7 +57,8 @@ def main(gpu):
     params["learning_rate"] *= params["train_freq"]
     params["optim_params"]["eps"] *= params["train_freq"]
     params["optim_params"]["weight_decay"] *= params["train_freq"]
-    writer = init_logger(params)
+    logger = Logger()
+    writer = logger.init_logger(params)
 
     env = gym.make(params["env_name"])
     env = wrappers.wrap_dqn(env, max_episode_steps=params["max_steps_per_episode"])
@@ -59,7 +68,7 @@ def main(gpu):
     )
     net = net.to(params["device"])
 
-    watch_model(net)
+    logger.watch_model(net)
 
     tgt_net = ptan.agent.TargetNet(net)
     selector = ptan.actions.EpsilonGreedyActionSelector(epsilon=params["epsilon_start"])
@@ -98,10 +107,14 @@ def main(gpu):
                     logs["loss"] = loss_in_float
 
                 if i_episode == 0:
-                    write_log(writer, logs, frame_idx)
+                    logger.write_log(writer, logs, frame_idx)
+
+                if i_episode % 200 == 0:
+                    logger.save_model(net, frame_idx)
 
                 if success:
-                    write_log(writer, logs, frame_idx)
+                    logger.write_log(writer, logs, frame_idx)
+                    logger.save_model(net, frame_idx)
                     break
 
             if len(buffer) < params["replay_initial"]:

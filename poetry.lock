@@ -456,7 +456,7 @@ description = "A CLI and library for interacting with the Weights and Biases API
 name = "wandb"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "0.8.0"
+version = "0.8.1"
 
 [package.dependencies]
 Click = ">=6.0"
@@ -536,5 +536,5 @@ tensorboardx = ["434a3f0a886d12c9ca59ca32f71926a42404a4d8f3086011515cc93fb3aff7f
 torch = ["e8b793e9a9e28d7cee357f59cd7486cd85426c86e3821e8bb16c8f823a120d70"]
 torchvision = ["4911188843c10a2c66e8f3d0c3989647e626a7a75b8387e2dbbb3e5aa96887ad"]
 urllib3 = ["a53063d8b9210a7bdec15e7b272776b9d42b2fd6816401a0d43006ad2f9902db", "d363e3607d8de0c220d31950a8f38b18d5ba7c0830facd71a1c6b1036b7ce06c"]
-wandb = ["2e257c05bfbb2b29aec546266f75cbd68bfa93a0a6c843fcd538e2761c4965d0", "868c85cf668ee124acb12ec189ef6ee26e3a2bd7dc6d3084f78ffe8ce8ddf48d"]
+wandb = ["13e6db79c43bd394511468a3c918c0da31d1a0e27f89758d9010a418537d70c8", "ca568f222381aae07cfe5018852d7c88929684a9fd52f6414c2e634f112b5bbd"]
 watchdog = ["965f658d0732de3188211932aeb0bb457587f04f63ab4c1e33eab878e9de961d"]

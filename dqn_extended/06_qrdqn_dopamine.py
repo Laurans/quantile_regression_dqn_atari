@@ -24,8 +24,8 @@ class Logger:
         logs_dir = "../logs"
         uid = "_".join([generate()[0], name])
         print("Exp name", uid)
-        wandb.init(
-            name=name, project=project, dir=logs_dir, config=params, tensorboard=True
+        run = wandb.init(
+            name=name, project=project, dir=logs_dir, config=params
         )
 
         writer = SummaryWriter(logs_dir + "/tensorboard/" + uid)
@@ -33,6 +33,7 @@ class Logger:
         self.logs_dir = logs_dir
         path = self.logs_dir + f"/models/{self.uid}/"
         os.makedirs(path)
+        print("RUN DIR", run.config.run_dir)
         return writer
 
     def write_log(self, writer: SummaryWriter, scalars_dict: dict, step):
@@ -110,8 +111,8 @@ def main(gpu):
                 if i_episode == 0:
                     logger.write_log(writer, logs, frame_idx)
 
-                if i_episode % 200 == 0:
-                    logger.save_model(net, frame_idx)
+                if i_episode % 50 == 0:
+                    logger.save_model(net, i_episode)
 
                 if success:
                     logger.write_log(writer, logs, frame_idx)

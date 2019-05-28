@@ -20,7 +20,7 @@ os.environ["WANDB_MODE"] = "dryrun"
 class Logger:
     def init_logger(self, params):
         project = "dqn_extended"
-        name = "qrdqn_dopamine_space_invaders"
+        name = "qrdqn_dopamine_freeway"
         logs_dir = "../logs"
         uid = "_".join([generate()[0], name])
         print("Exp name", uid)

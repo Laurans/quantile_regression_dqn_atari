@@ -1,5 +1,5 @@
 pong:
-  env_name: SpaceInvadersNoFrameskip-v4
+  env_name: FreewayNoFrameskip-v4
   stop_reward: 18.0
   run_name: pong
   replay_size: 100000

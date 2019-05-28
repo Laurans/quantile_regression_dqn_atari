@@ -33,7 +33,6 @@ class Logger:
         self.logs_dir = logs_dir
         path = self.logs_dir + f"/models/{self.uid}/"
         os.makedirs(path)
-        print("RUN DIR", run.config.run_dir)
         return writer
 
     def write_log(self, writer: SummaryWriter, scalars_dict: dict, step):

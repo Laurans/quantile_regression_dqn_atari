@@ -6,7 +6,7 @@ import ptan
 import torch
 import torch.optim as optim
 import wandb
-from tensorboardX import SummaryWriter
+from torch.utils.tensorboard import SummaryWriter
 from torch.nn.utils import clip_grad_norm_
 from coolname import generate
 
@@ -24,20 +24,17 @@ class Logger:
         logs_dir = "../logs"
         uid = "_".join([generate()[0], name])
         print("Exp name", uid)
-        run = wandb.init(
-            name=name, project=project, dir=logs_dir, config=params
-        )
+        wandb.init(name=name, project=project, dir=logs_dir, config=params)
 
-        writer = SummaryWriter(logs_dir + "/tensorboard/" + uid)
+        self.writer = SummaryWriter(logs_dir + "/tensorboard/" + uid)
         self.uid = uid
         self.logs_dir = logs_dir
         path = self.logs_dir + f"/models/{self.uid}/"
         os.makedirs(path)
-        return writer
 
-    def write_log(self, writer: SummaryWriter, scalars_dict: dict, step):
+    def write_log(self, scalars_dict: dict, step):
         for key, value in scalars_dict.items():
-            writer.add_scalar(key, value, global_step=step)
+            self.writer.add_scalar(key, value, global_step=step)
 
         wandb.log(scalars_dict, step=step)
 
@@ -59,7 +56,7 @@ def main(gpu):
     params["optim_params"]["eps"] *= params["train_freq"]
     params["optim_params"]["weight_decay"] *= params["train_freq"]
     logger = Logger()
-    writer = logger.init_logger(params)
+    logger.init_logger(params)
 
     env = gym.make(params["env_name"])
     env = wrappers.wrap_dqn(env, max_episode_steps=params["max_steps_per_episode"])
@@ -108,13 +105,13 @@ def main(gpu):
                     logs["loss"] = loss_in_float
 
                 if i_episode == 0:
-                    logger.write_log(writer, logs, frame_idx)
+                    logger.write_log(logs, frame_idx)
 
                 if i_episode % 50 == 0:
                     logger.save_model(net, i_episode)
 
                 if success:
-                    logger.write_log(writer, logs, frame_idx)
+                    logger.write_log(logs, frame_idx)
                     logger.save_model(net, frame_idx)
                     break
 

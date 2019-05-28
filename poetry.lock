@@ -487,7 +487,7 @@ argh = ">=0.24.1"
 pathtools = ">=0.1.1"
 
 [metadata]
-content-hash = "8ccad3ac2062c87883c14aa279b50791d6125030248ea88ef481c171dfc638cf"
+content-hash = "18747f91398c1005499105849f7d964d34dff976375289bd6844e4102d154718"
 python-versions = "^3.7"
 
 [metadata.hashes]

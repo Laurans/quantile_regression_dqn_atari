@@ -17,6 +17,7 @@ tensorboardX = "^1.6"
 coolname = "^1.1"
 ptan = {git = "https://github.com/Shmuma/ptan.git"}
 wandb = "^0.8.0"
+future = "^0.17.1"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.7"

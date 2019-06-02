@@ -106,8 +106,6 @@ def main(gpu):
 
                 if i_episode == 0:
                     logger.write_log(logs, frame_idx)
-
-                if i_episode % 50 == 0:
                     logger.save_model(net, i_episode)
 
                 if success:

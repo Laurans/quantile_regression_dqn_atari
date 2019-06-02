@@ -34,9 +34,9 @@ poetry install
 
 All the scripts are in the `dqn_extended` repository.
 
-For testing a trained model, use the ... script.
+For testing a trained model, use the `00_testing_model.py` script.
 ```
-poetry run python ... <model_path> <output_render_dir>
+poetry run python `00_testing_model.py` <model_path> <output_render_dir>
 ```
 
 For training, you can use the other script with following cli

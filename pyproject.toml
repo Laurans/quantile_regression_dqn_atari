@@ -13,7 +13,6 @@ pyyaml = "^5.1"
 click = "^7.0"
 torch = {path = "../../../wheels/torch-1.1.0-cp37-cp37m-linux_x86_64.whl"}
 torchvision = "^0.2.2"
-tensorboardX = "^1.6"
 coolname = "^1.1"
 ptan = {git = "https://github.com/Shmuma/ptan.git"}
 wandb = "^0.8.0"
@@ -23,7 +22,6 @@ selenium = "^3.141"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.7"
-objgraph = "^3.4"
 
 [build-system]
 requires = ["poetry>=0.12"]
